@@ -22,4 +22,9 @@ app.get("/update", async (req, res) => {
   res.send(updateduser);
 });
 
+app.get("/read", async (req, res) => {
+  let users = await userModel.find();
+  res.send(users);
+});
+
 app.listen(3000);
