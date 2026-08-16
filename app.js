@@ -1,46 +1,40 @@
-const express = require ('express');
-const app= express();
-// const userModel = require('./usermodel')
-const path= require ("path");
+const express = require("express");
+const app = express();
+const path = require("path");
+const userModel = require("./models/user");
 
-app.set("view engine","ejs");
+app.set("view engine", "ejs");
+
 app.use(express.json());
-app.use(express.urlencoded({express:true}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get('/', (req, res) => {
-    res.render("index");
-})
-
-app.get("/read", (req, res) => {
-  res.render("read");
+// Home page
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
-// app.get("/create", async (req, res) => {
-//   let createuser = await userModel.create({
-//     name:"harsh",
-//     username:"harsh",
-//     email: "harsh@gmail.com"
-//   })
+// Read all users
+app.get("/read", async (req, res) => {
+  let allUsers = await userModel.find();
 
-//   res.send(createuser);
-// });
+  res.render("read", { users: allUsers });
+});
 
-// app.get("/update", async (req, res) => {
-  
-//   let updateduser = await userModel.findOneAndUpdate({username: "harsh"}, {username:"harsh sharma"}, {new:true} )
-//   res.send(updateduser);
-// });
+// Create user
+app.post("/create", async (req, res) => {
+  let { name, email, imageurl } = req.body;
 
-// app.get("/read", async (req, res) => {
-//   let users = await userModel.find();
-//   res.send(users);
-// });
+  let createdUser = await userModel.create({
+    name,
+    email,
+    image: imageurl,
+  });
 
-// app.get("/delete", async (req, res) => {
-//   let users = await userModel.findOneAndDelete({username:"harsh"});
-//   res.send(users);
-// });
+  res.redirect("/read");
+});
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
+});
