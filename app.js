@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
+const jwt= require("jsonwebtoken");
 
 
 const app = express();
@@ -8,12 +9,24 @@ const app = express();
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  bcrypt.genSalt(10, function (err, salt) {
-    bcrypt.hash("hehhehhe", salt, function (err, hash) {
-      console.log(hash);
+  let token = jwt.sign({email: "harsh@gmail.com"}, "secret");
+  res.cookie("token", token);
+  res.send("done");
     });
-  });
+
+app.get("/read", function(req,res){
+  console.log(req.cookies.token);
 });
+ 
+
+// app.get("/", (req, res) => {
+//   bcrypt.genSalt(10, function (err, salt) {
+//     bcrypt.hash("hehhehhe", salt, function (err, hash) {
+//       console.log(hash);
+//       res.send("hello");
+//     });
+//   });
+// });
 
 // app.get("/read", (req, res) => {
 //   console.log(req.cookies);
