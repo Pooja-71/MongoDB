@@ -1,13 +1,19 @@
 const express = require("express");
-// const cookieParser = require("cookie-parser");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 const userModel = require("./models/user");
-// const postModel = require("./models/post");
+const postModel = require("./models/post");
 
 const app = express();
+
+mongoose
+  .connect("mongodb://127.0.0.1:27017/mongopractice")
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err) => {
+    console.log("MongoDB connection error:", err);
+  });
 
 // app.use(cookieParser());
 
@@ -21,9 +27,26 @@ app.get("/create", async function (req, res) {
   let user = await userModel.create({
     username: "harsh",
     age: 25,
-    email: "harsh@gmail.com"
-  })
+    email: "harsh@gmail.com",
+  });
   res.send(user);
+});
+
+app.get("/post/create", async function (req, res) {
+  let post = await postModel.create({
+    postdata: "this is post data",
+    user: "6a8490f1f47bc183518ef1bd",
+  });
+
+  let user = await userModel.findOne({
+    _id: "6a8490f1f47bc183518ef1bd",
+  });
+
+  user.posts.push(post._id);
+
+  await user.save();
+
+  res.send({ post, user });
 });
 
 // app.get("/", (req, res) => {
