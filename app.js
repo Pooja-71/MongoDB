@@ -1,23 +1,30 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
-const bcrypt = require("bcrypt");
-const jwt= require("jsonwebtoken");
+// const cookieParser = require("cookie-parser");
+// const bcrypt = require("bcrypt");
+// const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
+const userModel = require("./models/user");
+// const postModel = require("./models/post");
 
 const app = express();
 
-app.use(cookieParser());
+// app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  let token = jwt.sign({email: "harsh@gmail.com"}, "secret");
-  res.cookie("token", token);
-  res.send("done");
-    });
+// app.get("/", (req, res) => {
+//   let token = jwt.sign({email: "harsh@gmail.com"}, "secret");
+//   res.cookie("token", token);
+//   res.send("done");
+//     });
 
-app.get("/read", function(req,res){
-  console.log(req.cookies.token);
+app.get("/create", async function (req, res) {
+  let user = await userModel.create({
+    username: "harsh",
+    age: 25,
+    email: "harsh@gmail.com"
+  })
+  res.send(user);
 });
- 
 
 // app.get("/", (req, res) => {
 //   bcrypt.genSalt(10, function (err, salt) {
